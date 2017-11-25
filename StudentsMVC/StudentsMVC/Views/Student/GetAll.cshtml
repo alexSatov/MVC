@@ -1,0 +1,38 @@
+﻿@using Microsoft.CodeAnalysis.CSharp.Syntax
+@model StudentsModel
+
+<div class="view">
+    @{
+        if (Model.Students.Count == 0)
+        {
+            <div class="nobody">Еще не добавлен ни один студент</div>
+        }
+        else
+        {
+            <table>
+                <caption>Студенты курса ASP .NET Core MVC</caption>
+                <tr>
+                    <th>ID</th>
+                    <th>Имя</th>
+                    <th>Email</th>
+                    <th>Баллы</th>
+                </tr>
+                @foreach (var student in Model.Students.Values)
+                {
+                    <tr>
+                        <td>@student.Id</td>
+                        <td>@student.Name</td>
+                        <td>@student.Email</td>
+                        <td>@student.Mark</td>
+                    </tr>
+                }
+            </table>
+        }
+    }
+    
+    <div class="buttons">
+        <a class="btn btn-primary" href="@Url.Action("Add"   , "Student")">Добавить</a>
+        <a class="btn btn-primary" href="@Url.Action("Update", "Student")">Обновить</a>
+        <a class="btn btn-primary" href="@Url.Action("Delete", "Student")">Удалить</a>
+    </div>
+</div>

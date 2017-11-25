@@ -1,74 +1,72 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+﻿using System.Linq;
+using System.Collections.Generic;
 using StudentsMVC.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace StudentsMVC.Controllers
 {
     public class StudentController : Controller
     {
-        private static readonly Dictionary<int, Student> students = new Dictionary<int, Student>();
-        private static readonly JsonSerializerSettings settings = new JsonSerializerSettings
+        private static readonly StudentsModel model = new StudentsModel
         {
-            Formatting = Formatting.Indented
+            Students = new Dictionary<int, StudentModel>()
         };
 
-        [HttpPut("/student")]
-        public IActionResult Create(Student student)
+        [HttpGet]
+        public IActionResult GetAll()
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            if (students.Keys.Contains(student.Id))
-                return BadRequest($"Student with ID = {student.Id} is already exist.");
-
-            students[student.Id] = student;
-
-            return Json(student, settings);
+            return View(model);
         }
 
-        [HttpGet("/student/{id}")]
-        public IActionResult Read(int id)
+        public IActionResult Add()
         {
-            if (!students.Keys.Contains(id))
-                return BadRequest($"Student with ID = {id} isn't exist.");
-
-            return Json(students[id], settings);
+            return View(new StudentModel());
         }
 
-        [HttpPost("/student")]
-        public IActionResult Update(Student student)
+        [HttpPost]
+        public IActionResult Add(StudentModel student)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            if (!ModelState.IsValid || model.Students.Keys.Contains(student.Id))
+                return Add();
 
-            if (!students.Keys.Contains(student.Id))
-                return BadRequest($"Student with ID = {student.Id} isn't exist.");
+            model.Students[student.Id] = student;
 
-            var studentToUpdate = students[student.Id];
+            return RedirectToAction("GetAll", "Student");
+        }
+
+        public IActionResult Update()
+        {
+            return View(new StudentModel());
+        }
+
+        [HttpPost]
+        public IActionResult Update(StudentModel student)
+        {
+            if (!ModelState.IsValid || !model.Students.Keys.Contains(student.Id))
+                return Update();
+
+            var studentToUpdate   = model.Students[student.Id];
             studentToUpdate.Name  = student.Name  ?? studentToUpdate.Name;
             studentToUpdate.Email = student.Email ?? studentToUpdate.Email;
             studentToUpdate.Mark  = student.Mark  ?? studentToUpdate.Mark;
 
-            return Json(studentToUpdate, settings);
+            return RedirectToAction("GetAll", "Student");
         }
 
-        [HttpDelete("/student/{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete()
         {
-            if (!students.Keys.Contains(id))
-                return BadRequest($"Student with ID = {id} isn't exist.");
-
-            students.Remove(id);
-
-            return Ok($"Student with ID = {id} has been deleted.");
+            return View(new IdModel { Id = 0 });
         }
 
-        [HttpGet("/student/all")]
-        public IActionResult GetAll()
+        [HttpPost]
+        public IActionResult Delete(IdModel idModel)
         {
-            return Json(students, settings);
+            if (!model.Students.Keys.Contains(idModel.Id))
+                return Delete();
+
+            model.Students.Remove(idModel.Id);
+
+            return RedirectToAction("GetAll", "Student");
         }
     }
 }

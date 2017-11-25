@@ -1,0 +1,17 @@
+﻿@model IdModel
+
+<div class="view">
+    @using (Html.BeginForm("Delete", "Student", FormMethod.Post))
+    {
+        <div>
+            <div>@Html.DisplayNameFor(m => m.Id)</div>
+            <div>@Html.EditorFor(m => m.Id)</div>
+            <div>@Html.ValidationMessageFor(m => m.Id)</div>
+        </div>
+
+        <div class="buttons">
+            <button class="btn btn-primary" type="submit">Подтвердить</button>
+            <a class="btn btn-primary" href="@Url.Action("GetAll", "Student")">Отмена</a>
+        </div>
+    }
+</div>

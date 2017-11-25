@@ -1,0 +1,13 @@
+﻿@model StudentModel
+
+<div class="view">
+    @using (Html.BeginForm("Update", "Student", FormMethod.Post))
+    {
+        @Html.Partial("EditorTemplates/Student", Model)
+
+        <div class="buttons">
+            <button class="btn btn-primary" type="submit">Сохранить</button>
+            <a class="btn btn-primary" href="@Url.Action("GetAll", "Student")">Отмена</a>
+        </div>
+    }
+</div>
