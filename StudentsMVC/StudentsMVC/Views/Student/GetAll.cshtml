@@ -1,9 +1,10 @@
 ﻿@using Microsoft.CodeAnalysis.CSharp.Syntax
-@model StudentsModel
+@using StudentsMVC.Services
+@inject StudentService Service
 
 <div class="view">
     @{
-        if (Model.Students.Count == 0)
+        if (Service.Students.Count == 0)
         {
             <div class="nobody">Еще не добавлен ни один студент</div>
         }
@@ -17,7 +18,7 @@
                     <th>Email</th>
                     <th>Баллы</th>
                 </tr>
-                @foreach (var student in Model.Students.Values)
+                @foreach (var student in Service.Students.Values)
                 {
                     <tr>
                         <td>@student.Id</td>

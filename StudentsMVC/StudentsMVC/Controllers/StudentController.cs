@@ -1,51 +1,56 @@
 ﻿using System.Linq;
-using System.Collections.Generic;
 using StudentsMVC.Models;
+using StudentsMVC.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace StudentsMVC.Controllers
 {
     public class StudentController : Controller
     {
-        private static readonly StudentsModel model = new StudentsModel
+        private readonly StudentService studentService;
+
+        public StudentController(StudentService studentService)
         {
-            Students = new Dictionary<int, StudentModel>()
-        };
+            this.studentService = studentService;
+        }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            return View(model);
+            return View();
         }
 
         public IActionResult Add()
         {
-            return View(new StudentModel());
+            var model = HttpContext.RequestServices.GetService<StudentModel>();
+            return View(model);
         }
 
         [HttpPost]
-        public IActionResult Add(StudentModel student)
+        public IActionResult Add([FromServices] StudentService studentService, StudentModel student)  //just for hw
         {
-            if (!ModelState.IsValid || model.Students.Keys.Contains(student.Id))
+            if (!ModelState.IsValid || studentService.Students.Keys.Contains(student.Id))
                 return Add();
 
-            model.Students[student.Id] = student;
+            studentService.Students[student.Id] = student;
 
             return RedirectToAction("GetAll", "Student");
         }
 
         public IActionResult Update()
         {
-            return View(new StudentModel());
+            var model = HttpContext.RequestServices.GetService<StudentModel>();
+            return View(model);
         }
 
         [HttpPost]
         public IActionResult Update(StudentModel student)
         {
-            if (!ModelState.IsValid || !model.Students.Keys.Contains(student.Id))
+            if (!ModelState.IsValid || !studentService.Students.Keys.Contains(student.Id))
                 return Update();
 
-            var studentToUpdate   = model.Students[student.Id];
+            var studentToUpdate   = studentService.Students[student.Id];
             studentToUpdate.Name  = student.Name  ?? studentToUpdate.Name;
             studentToUpdate.Email = student.Email ?? studentToUpdate.Email;
             studentToUpdate.Mark  = student.Mark  ?? studentToUpdate.Mark;
@@ -55,16 +60,17 @@ namespace StudentsMVC.Controllers
 
         public IActionResult Delete()
         {
-            return View(new IdModel { Id = 0 });
+            var model = ActivatorUtilities.CreateInstance<IdModel>(HttpContext.RequestServices, 0);
+            return View(model);
         }
 
         [HttpPost]
-        public IActionResult Delete(IdModel idModel)
+        public IActionResult Delete(int id)
         {
-            if (!model.Students.Keys.Contains(idModel.Id))
+            if (!studentService.Students.Keys.Contains(id))
                 return Delete();
 
-            model.Students.Remove(idModel.Id);
+            studentService.Students.Remove(id);
 
             return RedirectToAction("GetAll", "Student");
         }

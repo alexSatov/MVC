@@ -6,5 +6,10 @@ namespace StudentsMVC.Models
     {
         [Display(Name = "№")]
         public int Id { get; set; }
+
+        public IdModel(int id)
+        {
+            Id = id;
+        }
     }
 }

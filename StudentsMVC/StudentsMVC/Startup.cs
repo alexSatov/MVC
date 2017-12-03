@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using StudentsMVC.Models;
+using StudentsMVC.Services;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +19,9 @@ namespace StudentsMVC
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<IdModel>();
+            services.AddTransient<StudentModel>();
+            services.AddSingleton<StudentService>();
             services.AddMvc();
         }
 
@@ -29,12 +34,9 @@ namespace StudentsMVC
                 app.UseBrowserLink();
             }
             else
-            {
                 app.UseExceptionHandler("/Home/Error");
-            }
 
             app.UseStaticFiles();
-
             app.UseMvc(routes => { routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}"); });
         }
     }
