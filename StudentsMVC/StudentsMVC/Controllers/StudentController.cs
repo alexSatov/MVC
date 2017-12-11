@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using StudentsMVC.Models;
-using StudentsMVC.Services;
+using StudentsMVC.DbContexts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,11 +8,11 @@ namespace StudentsMVC.Controllers
 {
     public class StudentController : Controller
     {
-        private readonly StudentService studentService;
+        private readonly StudentContext studentContext;
 
-        public StudentController(StudentService studentService)
+        public StudentController(StudentContext studentContext)
         {
-            this.studentService = studentService;
+            this.studentContext = studentContext;
         }
 
         [HttpGet]
@@ -28,12 +28,13 @@ namespace StudentsMVC.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add([FromServices] StudentService studentService, StudentModel student)  //just for hw
+        public IActionResult Add(StudentModel student)
         {
-            if (!ModelState.IsValid || studentService.Students.Keys.Contains(student.Id))
+            if (!ModelState.IsValid || studentContext.Students.Any(s => s.Id == student.Id))
                 return Add();
 
-            studentService.Students[student.Id] = student;
+            studentContext.Students.Add(student);
+            studentContext.SaveChanges();
 
             return RedirectToAction("GetAll", "Student");
         }
@@ -47,13 +48,18 @@ namespace StudentsMVC.Controllers
         [HttpPost]
         public IActionResult Update(StudentModel student)
         {
-            if (!ModelState.IsValid || !studentService.Students.Keys.Contains(student.Id))
+            if (!ModelState.IsValid || !studentContext.Students.Any(s => s.Id == student.Id))
                 return Update();
 
-            var studentToUpdate   = studentService.Students[student.Id];
+            var studentToUpdate = studentContext.Students.First(s => s.Id == student.Id);
+
             studentToUpdate.Name  = student.Name  ?? studentToUpdate.Name;
-            studentToUpdate.Email = student.Email ?? studentToUpdate.Email;
             studentToUpdate.Mark  = student.Mark  ?? studentToUpdate.Mark;
+            studentToUpdate.Email = student.Email ?? studentToUpdate.Email;
+            studentToUpdate.Phone = student.Phone ?? studentToUpdate.Phone;
+
+            studentContext.Update(studentToUpdate);
+            studentContext.SaveChanges();
 
             return RedirectToAction("GetAll", "Student");
         }
@@ -67,10 +73,13 @@ namespace StudentsMVC.Controllers
         [HttpPost]
         public IActionResult Delete(int id)
         {
-            if (!studentService.Students.Keys.Contains(id))
+            var student = studentContext.Students.FirstOrDefault(s => s.Id == id);
+
+            if (student == null)
                 return Delete();
 
-            studentService.Students.Remove(id);
+            studentContext.Students.Remove(student);
+            studentContext.SaveChanges();
 
             return RedirectToAction("GetAll", "Student");
         }
