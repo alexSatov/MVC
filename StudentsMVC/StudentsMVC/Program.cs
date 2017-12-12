@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 
 namespace StudentsMVC
 {
@@ -12,6 +13,8 @@ namespace StudentsMVC
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((hostingContext, config) =>
+                    config.AddJsonFile("Configs/host.json", true, true))
                 .UseStartup<Startup>()
                 .Build();
     }

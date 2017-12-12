@@ -5,7 +5,7 @@ namespace StudentsMVC.DbContexts
 {
     public class StudentContext : DbContext
     {
-        public DbSet<StudentModel> Students { get; set; }
+        public DbSet<Student> Students { get; set; }
 
         public StudentContext(DbContextOptions options) : base(options)
         {
@@ -13,9 +13,9 @@ namespace StudentsMVC.DbContexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<StudentModel>().ToTable("Student");
+            modelBuilder.Entity<Student>().ToTable("Student");
 
-            modelBuilder.Entity<StudentModel>()
+            modelBuilder.Entity<Student>()
                 .Property(s => s.Mark)
                 .HasDefaultValue(0);
         }

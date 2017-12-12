@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using StudentsMVC.Configs;
 
 namespace StudentsMVC
 {
@@ -27,11 +28,13 @@ namespace StudentsMVC
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<StudentContext>(opt => opt.UseSqlServer(connectionString));
-
             services.AddTransient<IdModel>();
-            services.AddTransient<StudentModel>();
+            services.AddTransient<Student>();
             services.AddSingleton<StudentService>();
+
+            services.Configure<Host>(Configuration.GetSection("Host"));
+
+            services.AddDbContext<StudentContext>(opt => opt.UseSqlServer(connectionString));
 
             services.AddMvc();
         }

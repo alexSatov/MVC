@@ -2,7 +2,7 @@
 
 namespace StudentsMVC.Models
 {
-    public class StudentModel
+    public class Student
     {
         [Key]
         [Required]
@@ -30,7 +30,7 @@ namespace StudentsMVC.Models
         [Display(Name = "Телефон")]
         public string Phone { get; set; }
 
-        protected bool Equals(StudentModel other)
+        protected bool Equals(Student other)
         {
             return Id == other.Id;
         }
@@ -40,7 +40,7 @@ namespace StudentsMVC.Models
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
 
-            return obj.GetType() == GetType() && Equals((StudentModel) obj);
+            return obj.GetType() == GetType() && Equals((Student) obj);
         }
 
         public override int GetHashCode()

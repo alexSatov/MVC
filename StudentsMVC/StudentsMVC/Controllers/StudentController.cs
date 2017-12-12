@@ -23,12 +23,12 @@ namespace StudentsMVC.Controllers
 
         public IActionResult Add()
         {
-            var model = HttpContext.RequestServices.GetService<StudentModel>();
+            var model = HttpContext.RequestServices.GetService<Student>();
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult Add(StudentModel student)
+        public IActionResult Add(Student student)
         {
             if (!ModelState.IsValid || studentContext.Students.Any(s => s.Id == student.Id))
                 return Add();
@@ -41,12 +41,12 @@ namespace StudentsMVC.Controllers
 
         public IActionResult Update()
         {
-            var model = HttpContext.RequestServices.GetService<StudentModel>();
+            var model = HttpContext.RequestServices.GetService<Student>();
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult Update(StudentModel student)
+        public IActionResult Update(Student student)
         {
             if (!ModelState.IsValid || !studentContext.Students.Any(s => s.Id == student.Id))
                 return Update();

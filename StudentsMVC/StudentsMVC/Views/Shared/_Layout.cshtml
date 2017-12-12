@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.Extensions.Options
+@using StudentsMVC.Configs
+@inject IOptions<Host> HostOptions
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -41,7 +45,9 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2017 - StudentsMVC</p>
+            <span>&copy; 2017 - StudentsMVC</span>
+            <span class="ownerName">@HostOptions.Value.FullName</span>
+            <span class="ownerMail"><a href="mailto:@HostOptions.Value.Email">@HostOptions.Value.Email</a></span>
         </footer>
     </div>
 

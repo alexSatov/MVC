@@ -64,3 +64,10 @@ td, th {
 .buttons {
     margin-top: 20px;
 }
+
+.ownerName::before,
+.ownerMail::before {
+    content: '\2022';
+    padding-left: 10px;
+    padding-right: 14px;
+}
